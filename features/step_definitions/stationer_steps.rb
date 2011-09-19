@@ -1,7 +1,7 @@
-When /^Stationer processes the following string:$/ do |string|
+When /^Stationer processes an email including the following string:$/ do |string|
   @processed_string = Stationer.process string
 end
 
-Then /^I should get:$/ do |string|
-  @processed_string.should == string
+Then /^the returned email should include:$/ do |string|
+  @processed_string.should include string
 end

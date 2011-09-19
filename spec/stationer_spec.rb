@@ -22,4 +22,11 @@ describe Stationer do
       Stationer.process("test").should == "result"
     end
   end
+  
+  describe '#email' do
+    it "replaces inline CSS colors in the original's <p> tags with font tags with color attributes" do
+      s = Stationer.new "<p style='color: #ef3'>test</p>"
+      s.email.should include "<p><font color=\"#ef3\">test</font></p>"
+    end
+  end
 end
