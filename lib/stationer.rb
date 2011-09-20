@@ -14,12 +14,9 @@ class Stationer
     email_doc.css('p').each do |node|
       inline_css = node.attr("style").to_s
       font_attrs = ""
-      if color_match = inline_css.match(/color:\s*(.+);?/)
-        font_attrs << " color='#{color_match[1]}'"
-      end
-      if font_match = inline_css.match(/font-family:\s*(.+);?/)
-        font_attrs << " face='#{font_match[1]}'"
-      end
+      font_attrs << css_to_font_attr(inline_css, "color", "color")
+      font_attrs << css_to_font_attr(inline_css, "font-family", "face")
+      
       node.inner_html = "<font #{font_attrs}>#{node.inner_html}</font>"
       node.remove_attribute("style")
     end
@@ -29,5 +26,13 @@ class Stationer
 private
   def doc
     @doc ||= Nokogiri::HTML(@original)
+  end
+  
+  def css_to_font_attr(css, css_attr_name, font_attr_name)
+    if match = css.match(/#{css_attr_name}:\s*(.+);?/)
+      " #{font_attr_name}='#{match[1]}'"
+    else
+      ""
+    end
   end
 end
