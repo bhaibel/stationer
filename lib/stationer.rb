@@ -29,7 +29,7 @@ private
   end
   
   def css_to_font_attr(css, css_attr_name, font_attr_name)
-    if match = css.match(/#{css_attr_name}:\s*(.+);?/)
+    if match = css.match(/#{css_attr_name}:\s*([^;]+)/)
       " #{font_attr_name}='#{match[1]}'"
     else
       ""
