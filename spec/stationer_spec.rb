@@ -28,5 +28,10 @@ describe Stationer do
       s = Stationer.new "<p style='color: #ef3'>test</p>"
       s.email.should include "<p><font color=\"#ef3\">test</font></p>"
     end
+
+    it "replaces inline CSS font-families in the original's <p> tags with font tags with font-face attributes" do
+      s = Stationer.new "<p style='font-family: Arial, Helvetica, sans-serif'>test</p>"
+      s.email.should include "<p><font face=\"Arial, Helvetica, sans-serif\">test</font></p>"
+    end
   end
 end

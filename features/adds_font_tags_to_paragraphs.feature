@@ -13,3 +13,18 @@ Feature: can add appropriate font tags to paragraphs
         Sample text.
       </font></p>
       """
+  
+  @wip
+  Scenario: inline css font within paragraph tag
+    When Stationer processes an email including the following string:
+      """
+      <p style="font-family: Arial, Helvetica, sans-serif">
+        Sample text.
+      </p>
+      """
+    Then the returned email should include:
+      """
+      <p><font face="Arial, Helvetica, sans-serif">
+        Sample text.
+      </font></p>
+      """
