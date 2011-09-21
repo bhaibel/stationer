@@ -1,4 +1,5 @@
 require 'nokogiri'
+require 'stationer/node'
 
 class Stationer
   def self.process(string)
