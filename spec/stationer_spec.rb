@@ -40,5 +40,17 @@ describe Stationer do
       s.email.should match /<font.+color="#557329".*>/
       s.email.should match /<p><font.+>text<\/font><\/p>/
     end
+    
+    it "replaces inline CSS with font tags in li tags" do
+      s = Stationer.new "<li style='font-family: Arial, Helvetica; color: #557329'>text</li>"
+      s.email.should match /<font.+face="Arial, Helvetica".*>/
+      s.email.should match /<font.+color="#557329".*>/
+      s.email.should match /<li><font.+>text<\/font><\/li>/
+    end
+    
+    it "replaces inline CSS in ul tags with font tags within li tags" do
+      s = Stationer.new "<ul style='font-family: Arial, Helvetica, sans-serif'><li>text</li><li>moretext</li></ul>"
+      s.email.should match /<ul>\n<li><font face="Arial, Helvetica, sans-serif">text<\/font><\/li>\n<li><font face="Arial, Helvetica, sans-serif">moretext<\/font><\/li>\n<\/ul>/
+    end
   end
 end
