@@ -53,5 +53,43 @@ describe Stationer::Node do
         end
       end
     end
+
+    context "given a li tag" do
+      context "with color set in inline css" do
+        it 'returns a li node which has been converted to email-friendly format' do
+          converted_node = Stationer::Node.new(
+            Nokogiri::HTML("<li style='color: #232'>text</li>").css('li').first
+          ).convert
+
+          converted_node.should be_a Nokogiri::XML::Node
+          converted_node.to_s.should include "<li><font color=\"#232\">text</font></li>"
+        end
+      end
+
+      context "with font set in inline css" do
+        it 'returns a paragraph node which has been converted to email-friendly format' do
+          converted_node = Stationer::Node.new(
+            Nokogiri::HTML("<li style='font-family: Arial'>text</li>").css('li').first
+          ).convert
+
+          converted_node.should be_a Nokogiri::XML::Node
+          converted_node.to_s.should include "<li><font face=\"Arial\">text</font></li>"
+        end
+      end
+
+      context "with multiple attributes set in inline css" do
+        it 'returns a paragraph node which has been converted to email-friendly format' do
+          converted_node = Stationer::Node.new(
+            Nokogiri::HTML("<li style='color: #232; font-family: Arial'>text</li>").css('li').first
+          ).convert
+          s = converted_node.to_s
+
+          converted_node.should be_a Nokogiri::XML::Node
+          s.should match /<font.+face="Arial".*>/
+          s.should match /<font.+color="#232".*>/
+          s.should match /<li><font.+>text<\/font><\/li>/
+        end
+      end
+    end
   end
 end
