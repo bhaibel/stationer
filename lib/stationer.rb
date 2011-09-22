@@ -38,13 +38,7 @@ private
 
   def inline_css_to_font_tags_for_selector(selector)
     @email_doc.css(selector).each do |node|
-      inline_css = node.attr("style").to_s
-      font_attrs = ""
-      font_attrs << css_to_font_attr(inline_css, "color", "color")
-      font_attrs << css_to_font_attr(inline_css, "font-family", "face")
-      
-      node.inner_html = "<font #{font_attrs}>#{node.inner_html}</font>" if font_attrs.length > 0
-      node.remove_attribute("style")
+      node.replace Node.new(node).convert
     end
   end
   
