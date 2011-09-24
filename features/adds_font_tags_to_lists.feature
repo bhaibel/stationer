@@ -1,64 +1,24 @@
 Feature: can add appropriate font tags to lists
 
-  Scenario: inline css color within li tag
-    When Stationer processes a "li" tag with "color: #346" set in  inline css
-    Then the returned email should include:
-      """
-      <li><font color="#346">
-        Sample text.
-      </font></li>
-      """
-  
-  Scenario: inline css font within li tag
-    When Stationer processes a "li" tag with "font-family: Arial, Helvetica, sans-serif" set in  inline css
-     Then the returned email should include:
-      """
-      <li><font face="Arial, Helvetica, sans-serif">
-        Sample text.
-      </font></li>
-      """
-      
-  Scenario: inline css multiattribute within li tag
-    When Stationer processes a "li" tag with "color: #346; font-family: Arial, Helvetica" set in  inline css
-    Then the returned email should include:
-      """
-      <li><font color="#346" face="Arial, Helvetica">
-        Sample text.
-      </font></li>
-      """
-  
-  Scenario: inline css color within ul tag
-    When Stationer processes a "ul" tag with "color: #346" set in inline css and a nested "li" tag
-    Then the returned email should include:
-      """
-      <ul>
-        <li><font color="#346">
-          Sample text.
-        </font></li>
-      </ul>
-      """
+  Scenario Outline: inline css within li tag
+    When Stationer processes a "li" tag with "<inline_css>" set in  inline css
+    Then the returned email should include a "li font<font_attrs>"
 
-  Scenario: inline css font within ul tag
-    When Stationer processes a "ul" tag with "font-family: Arial, Helvetica, sans-serif" set in inline css and a nested "li" tag
-    Then the returned email should include:
-      """
-      <ul>
-        <li><font face="Arial, Helvetica, sans-serif">
-          Sample text.
-        </font></li>
-      </ul>
-      """
+  Scenarios: inline css within li tag
+    | inline_css  | font_attrs     |
+    | color: #346 | [color='#346'] |
+    | font-family: Arial, Helvetica, sans-serif | [face='Arial, Helvetica, sans-serif'] |
+    | color: #346; font-family: Arial, Helvetica | [color='#346'][face='Arial, Helvetica'] |
+    
+  Scenario Outline: inline css within ul tag
+    When Stationer processes a "ul" tag with "<inline_css>" set in inline css and a nested "li" tag
+    Then the returned email should include a "ul li font<font_attrs>"
 
-  Scenario: inline css multiattribute within ul tag
-    When Stationer processes a "ul" tag with "color: #346; font-family: Arial, Helvetica" set in inline css and a nested "li" tag
-    Then the returned email should include:
-      """
-      <ul>
-        <li><font color="#346" face="Arial, Helvetica">
-          Sample text.
-        </font></li>
-      </ul>
-      """
+  Scenarios: inline css within ul tag
+    | inline_css  | font_attrs     |
+    | color: #346 | [color='#346'] |
+    | font-family: Arial, Helvetica, sans-serif | [face='Arial, Helvetica, sans-serif'] |
+    | color: #346; font-family: Arial, Helvetica | [color='#346'][face='Arial, Helvetica'] |
   
   Scenario: inline css color in li tag overrides inline css color set in parent ul
     When Stationer processes an email including the following string:
@@ -72,16 +32,7 @@ Feature: can add appropriate font tags to lists
         </li>
       </ul>
       """
-    Then the returned email should include:
-      """
-      <ul>
-        <li><font color="#346">
-          Sample text.
-        </font></li>
-        <li><font color="#530">
-          More text.
-        </font></li>
-      </ul>
-      """
+      Then the returned email should include a "ul li font[color='#346']"
+      And the returned email should include a "ul li font[color='#530']"
 
     

@@ -26,7 +26,11 @@ When /^Stationer processes a "ul" tag with "([^"]*)" set in inline css and a nes
   @processed_string = Stationer.process(html)
 end
 
-
 Then /^the returned email should include:$/ do |string|
   @processed_string.should match string.gsub(/\s+/, '\s*')
+end
+
+Then /^the returned email should include a "([^"]*)"$/ do |selector|
+  reparsed_doc = Nokogiri::HTML(@processed_string)
+  reparsed_doc.css(selector).length.should > 0
 end
