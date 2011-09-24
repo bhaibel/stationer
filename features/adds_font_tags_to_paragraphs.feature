@@ -1,12 +1,7 @@
 Feature: can add appropriate font tags to paragraphs
 
   Scenario: inline css color within paragraph tag
-    When Stationer processes an email including the following string:
-      """
-      <p style="color: #346">
-        Sample text.
-      </p>
-      """
+    When Stationer processes a "p" tag with "color: #346" set in  inline css
     Then the returned email should include:
       """
       <p><font color="#346">
@@ -15,12 +10,7 @@ Feature: can add appropriate font tags to paragraphs
       """
   
   Scenario: inline css font within paragraph tag
-    When Stationer processes an email including the following string:
-      """
-      <p style="font-family: Arial, Helvetica, sans-serif">
-        Sample text.
-      </p>
-      """
+    When Stationer processes a "p" tag with "font-family: Arial, Helvetica, sans-serif" set in  inline css
     Then the returned email should include:
       """
       <p><font face="Arial, Helvetica, sans-serif">
@@ -29,12 +19,7 @@ Feature: can add appropriate font tags to paragraphs
       """
       
   Scenario: inline css multiattribute within paragraph tag
-    When Stationer processes an email including the following string:
-      """
-      <p style="color: #346; font-family: Arial, Helvetica">
-        Sample text.
-      </p>
-      """
+    When Stationer processes a "p" tag with "color: #346; font-family: Arial, Helvetica" set in  inline css
     Then the returned email should include:
       """
       <p><font color="#346" face="Arial, Helvetica">

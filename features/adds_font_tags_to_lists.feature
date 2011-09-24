@@ -1,12 +1,7 @@
 Feature: can add appropriate font tags to lists
 
   Scenario: inline css color within li tag
-    When Stationer processes an email including the following string:
-      """
-      <li style="color: #346">
-        Sample text.
-      </li>
-      """
+    When Stationer processes a "li" tag with "color: #346" set in  inline css
     Then the returned email should include:
       """
       <li><font color="#346">
@@ -15,13 +10,8 @@ Feature: can add appropriate font tags to lists
       """
   
   Scenario: inline css font within li tag
-    When Stationer processes an email including the following string:
-      """
-      <li style="font-family: Arial, Helvetica, sans-serif">
-        Sample text.
-      </li>
-      """
-    Then the returned email should include:
+    When Stationer processes a "li" tag with "font-family: Arial, Helvetica, sans-serif" set in  inline css
+     Then the returned email should include:
       """
       <li><font face="Arial, Helvetica, sans-serif">
         Sample text.
@@ -29,12 +19,7 @@ Feature: can add appropriate font tags to lists
       """
       
   Scenario: inline css multiattribute within li tag
-    When Stationer processes an email including the following string:
-      """
-      <li style="color: #346; font-family: Arial, Helvetica">
-        Sample text.
-      </li>
-      """
+    When Stationer processes a "li" tag with "color: #346; font-family: Arial, Helvetica" set in  inline css
     Then the returned email should include:
       """
       <li><font color="#346" face="Arial, Helvetica">
@@ -96,7 +81,6 @@ Feature: can add appropriate font tags to lists
       </ul>
       """
   
-  @wip
   Scenario: inline css color in li tag overrides inline css color set in parent ul
     When Stationer processes an email including the following string:
       """
@@ -120,4 +104,5 @@ Feature: can add appropriate font tags to lists
         </font></li>
       </ul>
       """
+
     
