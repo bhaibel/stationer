@@ -3,5 +3,5 @@ When /^Stationer processes an email including the following string:$/ do |string
 end
 
 Then /^the returned email should include:$/ do |string|
-  @processed_string.should include string
+  @processed_string.should match string.gsub(/\s+/, '\s*')
 end
