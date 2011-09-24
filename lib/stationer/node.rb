@@ -2,8 +2,11 @@ require 'nokogiri'
 
 class Stationer
   class Node
-    def initialize(a_node)
+    LOW_LEVEL_NODES = ["p", "li"]
+    
+    def initialize(a_node, options = {})
       @node = a_node
+      @parent_font_attrs = options[:parent_font_attrs]
     end
     
     def font_attrs_as_string
@@ -13,7 +16,13 @@ class Stationer
     def convert
       n = @node.dup
       if font_attrs_as_string.length > 0
-        n.inner_html = "<font #{font_attrs_as_string}>#{@node.inner_html}</font>"
+        if LOW_LEVEL_NODES.include?(n.name)
+          n.inner_html = "<font #{font_attrs_as_string}>#{@node.inner_html}</font>"
+        else
+          n.inner_html = n.children.inject("") do |html, child|
+            html << Node.new(child, :parent_font_attrs => @font_attrs_as_string).convert.to_s
+          end
+        end
       end
       n.remove_attribute("style")
       n
@@ -21,7 +30,7 @@ class Stationer
     
   private
     def find_font_attrs
-      @font_attrs_as_string = ""
+      @font_attrs_as_string = @parent_font_attrs || ""
       @font_attrs_as_string << css_to_font_attr(:inline_css, "color", "color")
       @font_attrs_as_string << css_to_font_attr(:inline_css, "font-family", "face")
     end
