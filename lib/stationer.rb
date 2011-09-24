@@ -23,6 +23,7 @@ private
     @doc ||= Nokogiri::HTML(@original)
   end
 
+  # not referenced by anything now, but retaining in case it's useful when I start adding in true stylesheet support
   def inline_css_to_font_tags_for_selector(selector)
     @email_doc.css(selector).each do |node|
       node.replace Node.new(node).convert

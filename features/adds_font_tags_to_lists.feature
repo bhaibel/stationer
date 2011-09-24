@@ -60,7 +60,7 @@ Feature: can add appropriate font tags to lists
       </ul>
       """
 
-  Scenario: inline css font within paragraph tag
+  Scenario: inline css font within ul tag
     When Stationer processes an email including the following string:
       """
       <ul style="font-family: Arial, Helvetica, sans-serif">
@@ -78,7 +78,7 @@ Feature: can add appropriate font tags to lists
       </ul>
       """
 
-  Scenario: inline css multiattribute within paragraph tag
+  Scenario: inline css multiattribute within ul tag
     When Stationer processes an email including the following string:
       """
       <ul style="color: #346; font-family: Arial, Helvetica">
@@ -95,3 +95,29 @@ Feature: can add appropriate font tags to lists
         </font></li>
       </ul>
       """
+  
+  @wip
+  Scenario: inline css color in li tag overrides inline css color set in parent ul
+    When Stationer processes an email including the following string:
+      """
+      <ul style="color: #346">
+        <li>
+          Sample text.
+        </li>
+        <li style="color: #530">
+          More text.
+        </li>
+      </ul>
+      """
+    Then the returned email should include:
+      """
+      <ul>
+        <li><font color="#346">
+          Sample text.
+        </font></li>
+        <li><font color="#530">
+          More text.
+        </font></li>
+      </ul>
+      """
+    

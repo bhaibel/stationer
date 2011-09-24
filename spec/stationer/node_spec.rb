@@ -128,6 +128,17 @@ describe Stationer::Node do
           s.should match /<li><font.+>text<\/font><\/li>/
         end
       end
+      
+      context "with a color inline-css style overriden by a child li's inline css" do
+        it 'returns a ul node which has been converted to email-friendly format' do
+          converted_node = Stationer::Node.new(
+            Nokogiri::HTML("<ul style='color: #456'><li>text</li><li style='color: #978'>more text.</li></ul>").css('ul').first
+          ).convert
+
+          converted_node.should be_a Nokogiri::XML::Node
+          converted_node.to_s.should match /<ul>\s*<li><font color="#456">text<\/font><\/li>\s*<li><font color="#978">more text.<\/font><\/li>\s*<\/ul>/
+        end
+      end
     end
   end
 end
