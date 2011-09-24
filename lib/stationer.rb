@@ -13,6 +13,7 @@ class Stationer
   def email
     @email_doc = doc.dup
 
+    # @email_doc.root.replace Node.new(@email_doc.root).convert
     ['p', 'ul', 'li'].each do |selector|
       inline_css_to_font_tags_for_selector(selector)
     end

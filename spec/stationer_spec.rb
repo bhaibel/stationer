@@ -24,9 +24,6 @@ describe Stationer do
   end
   
   describe '#email' do    
-    it "replaces inline CSS in ul tags with font tags within li tags" do
-      s = Stationer.new "<ul style='font-family: Arial, Helvetica, sans-serif'><li>text</li><li>moretext</li></ul>"
-      s.email.should match /<ul>\n<li><font face="Arial, Helvetica, sans-serif">text<\/font><\/li>\n<li><font face="Arial, Helvetica, sans-serif">moretext<\/font><\/li>\n<\/ul>/
-    end
+    it "sends all the relevant nodes through Node#convert"
   end
 end
