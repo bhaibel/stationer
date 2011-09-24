@@ -15,13 +15,13 @@ class Stationer
     
     def convert
       n = @node.dup
-      if font_attrs_as_string.length > 0
-        if LOW_LEVEL_NODES.include?(n.name)
+      if LOW_LEVEL_NODES.include?(n.name)
+        if font_attrs_as_string.length > 0
           n.inner_html = "<font #{font_attrs_as_string}>#{@node.inner_html}</font>"
-        elsif n.children.length > 0
-          n.inner_html = n.children.inject("") do |html, child|
-            html << Node.new(child, :parent_font_attrs => @font_attrs_as_string).convert.to_s
-          end
+        end
+      elsif n.children.length > 0
+        n.inner_html = n.children.inject("") do |html, child|
+          html << Node.new(child, :parent_font_attrs => font_attrs_as_string).convert.to_s
         end
       end
       n.remove_attribute("style")
