@@ -17,21 +17,7 @@ describe Stationer::Node do
   end
   
   describe "#convert" do
-    
-    def self.it_converts_to(name, selector)
-      it "converts the node to email-friendly format" do
-        converted_node = Stationer::Node.new(@original.css(name).first).convert
-        converted_node.name.should == name
-        converted_node.css(selector).length.should > 0
-      end
-    end
-
-    def self.set_root_style(style)
-      before do
-        @original.css(@tag_name).first.set_attribute("style", style)
-      end
-    end
-    
+        
     context "given a paragraph tag" do
       before do
         @tag_name = 'p'
@@ -117,6 +103,21 @@ describe Stationer::Node do
         it_converts_to 'ul', "li font[color='#309']"
       end
     end
+  end
   
+  context "given an internal stylesheet referencing a low-level node" do
+    before do
+      @original = Nokogiri::HTML <<-END
+        <html>
+          <head>
+            <style> p {color: #429} </style>
+          </head>
+          <p>text</p>
+        </head>
+      END
+      @tag_name = 'p'
+    end
+    
+    it_converts_to "p", "font[color='#429']"
   end
 end
