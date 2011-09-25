@@ -9,3 +9,10 @@ Feature: can add appropriate font tags to paragraphs
     | color: #346 | [color='#346'] |
     | font-family: Arial, Helvetica, sans-serif | [face='Arial, Helvetica, sans-serif'] |
     | color: #346; font-family: Arial, Helvetica | [color='#346'][face='Arial, Helvetica'] |
+  
+  @wip
+  Scenario: internal stylesheet with p selector
+    Given an internal stylesheet with "p { color: #458 }"
+    And a "p" tag
+    When Stationer processes the given document
+    Then the returned email should include a "p font[color='#458']"

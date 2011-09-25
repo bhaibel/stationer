@@ -1,6 +1,7 @@
 require 'spec_helper'
 
 describe Stationer::Node do
+    
   it 'accepts a single Nokogiri::HTML::Node on initialization' do
     Stationer::Node.new(Nokogiri::HTML("<p>text</p>").root)
   end
@@ -16,129 +17,96 @@ describe Stationer::Node do
   end
   
   describe "#convert" do
+    
+    def self.it_converts_to(name, selector)
+      it "converts the node to email-friendly format" do
+        converted_node = Stationer::Node.new(@original.css(name).first).convert
+        converted_node.name.should == name
+        converted_node.css(selector).length.should > 0
+      end
+    end
+
+    def self.set_root_style(style)
+      before do
+        @original.css(@tag_name).first.set_attribute("style", style)
+      end
+    end
+    
     context "given a paragraph tag" do
+      before do
+        @tag_name = 'p'
+        @original = Nokogiri::HTML("<p>text</p>")
+      end
+      
       context "with color set in inline css" do
-        it 'returns a paragraph node which has been converted to email-friendly format' do
-          converted_node = Stationer::Node.new(
-            Nokogiri::HTML("<p style='color: #232'>text</p>").css('p').first
-          ).convert
-
-          converted_node.should be_a Nokogiri::XML::Node
-          converted_node.to_s.should include "<p><font color=\"#232\">text</font></p>"
-        end
+        set_root_style 'color: #232'
+        it_converts_to 'p', "font[color='#232']"
       end
-
+      
       context "with font set in inline css" do
-        it 'returns a paragraph node which has been converted to email-friendly format' do
-          converted_node = Stationer::Node.new(
-            Nokogiri::HTML("<p style='font-family: Arial'>text</p>").css('p').first
-          ).convert
-
-          converted_node.should be_a Nokogiri::XML::Node
-          converted_node.to_s.should include "<p><font face=\"Arial\">text</font></p>"
-        end
+        set_root_style 'font-family: Arial, Helvetica'
+        it_converts_to 'p', "font[face='Arial, Helvetica']"
       end
-
+      
       context "with multiple attributes set in inline css" do
-        it 'returns a paragraph node which has been converted to email-friendly format' do
-          converted_node = Stationer::Node.new(
-            Nokogiri::HTML("<p style='color: #232; font-family: Arial'>text</p>").css('p').first
-          ).convert
-          s = converted_node.to_s
-
-          converted_node.should be_a Nokogiri::XML::Node
-          s.should match /<font.+face="Arial".*>/
-          s.should match /<font.+color="#232".*>/
-          s.should match /<p><font.+>text<\/font><\/p>/
-        end
+        set_root_style 'color: #232; font-family: Arial'
+        it_converts_to 'p', "font[color='#232'][face='Arial']"
       end
     end
 
     context "given a li tag" do
+      before do
+        @tag_name = 'li'
+        @original = Nokogiri::HTML("<li>text</li>")
+      end
+
       context "with color set in inline css" do
-        it 'returns a li node which has been converted to email-friendly format' do
-          converted_node = Stationer::Node.new(
-            Nokogiri::HTML("<li style='color: #232'>text</li>").css('li').first
-          ).convert
-
-          converted_node.should be_a Nokogiri::XML::Node
-          converted_node.to_s.should include "<li><font color=\"#232\">text</font></li>"
-        end
+        set_root_style 'color: #232'
+        it_converts_to 'li', "font[color='#232']"
       end
-
+      
       context "with font set in inline css" do
-        it 'returns a paragraph node which has been converted to email-friendly format' do
-          converted_node = Stationer::Node.new(
-            Nokogiri::HTML("<li style='font-family: Arial'>text</li>").css('li').first
-          ).convert
-
-          converted_node.should be_a Nokogiri::XML::Node
-          converted_node.to_s.should include "<li><font face=\"Arial\">text</font></li>"
-        end
+        set_root_style 'font-family: Arial, Helvetica'
+        it_converts_to 'li', "font[face='Arial, Helvetica']"
       end
-
+      
       context "with multiple attributes set in inline css" do
-        it 'returns a paragraph node which has been converted to email-friendly format' do
-          converted_node = Stationer::Node.new(
-            Nokogiri::HTML("<li style='color: #232; font-family: Arial'>text</li>").css('li').first
-          ).convert
-          s = converted_node.to_s
-
-          converted_node.should be_a Nokogiri::XML::Node
-          s.should match /<font.+face="Arial".*>/
-          s.should match /<font.+color="#232".*>/
-          s.should match /<li><font.+>text<\/font><\/li>/
-        end
+        set_root_style 'color: #232; font-family: Arial'
+        it_converts_to 'li', "font[color='#232'][face='Arial']"
       end
     end
     
     context "given a ul tag" do
+      before do
+        @tag_name = 'ul'
+        @original = Nokogiri::HTML("<ul><li>text</li><li>moretext</li></ul>")
+      end
+
       context "with color set in inline css" do
-        it 'returns a ul node which has been converted to email-friendly format' do
-          converted_node = Stationer::Node.new(
-            Nokogiri::HTML("<ul style='color: #456'><li>text</li><li>moretext</li></ul>").css('ul').first
-          ).convert
-
-          converted_node.should be_a Nokogiri::XML::Node
-          converted_node.to_s.should match /<ul>\s*<li><font color="#456">text<\/font><\/li>\s*<li><font color="#456">moretext<\/font><\/li>\s*<\/ul>/
-        end
+        set_root_style 'color: #232'
+        it_converts_to 'ul', "li font[color='#232']"
       end
-
+      
       context "with font set in inline css" do
-        it 'returns a paragraph node which has been converted to email-friendly format' do
-          converted_node = Stationer::Node.new(
-            Nokogiri::HTML("<ul style='font-family: Arial, Helvetica, sans-serif'><li>text</li><li>moretext</li></ul>").css('ul').first
-          ).convert
-
-          converted_node.should be_a Nokogiri::XML::Node
-          converted_node.to_s.should match /<ul>\n?<li><font face="Arial, Helvetica, sans-serif">text<\/font><\/li>\n?<li><font face="Arial, Helvetica, sans-serif">moretext<\/font><\/li>\n?<\/ul>/
-        end
+        set_root_style 'font-family: Arial, Helvetica'
+        it_converts_to 'ul', "li font[face='Arial, Helvetica']"
       end
-
+      
       context "with multiple attributes set in inline css" do
-        it 'returns a ul node which has been converted to email-friendly format' do
-          converted_node = Stationer::Node.new(
-            Nokogiri::HTML("<ul style='font-family: Arial, Helvetica, sans-serif; color: #232'><li>text</li><li>moretext</li></ul>").css('ul').first
-          ).convert
-          s = converted_node.to_s
-
-          converted_node.should be_a Nokogiri::XML::Node
-          s.should match /<font.+face="Arial, Helvetica, sans-serif".*>/
-          s.should match /<font.+color="#232".*>/
-          s.should match /<li><font.+>text<\/font><\/li>/
-        end
+        set_root_style 'color: #232; font-family: Arial'
+        it_converts_to 'ul', "li font[color='#232'][face='Arial']"
       end
       
       context "with a color inline-css style overriden by a child li's inline css" do
-        it 'returns a ul node which has been converted to email-friendly format' do
-          converted_node = Stationer::Node.new(
-            Nokogiri::HTML("<ul style='color: #456'><li>text</li><li style='color: #978'>more text.</li></ul>").css('ul').first
-          ).convert
-
-          converted_node.should be_a Nokogiri::XML::Node
-          converted_node.to_s.should match /<ul>\s*<li><font color="#456">text<\/font><\/li>\s*<li><font color="#978">more text.<\/font><\/li>\s*<\/ul>/
+        before do
+          @original.css('ul').first.set_attribute('style', "color: #232")
+          @original.css('li').last.set_attribute('style', "color: #309")
         end
+        
+        it_converts_to 'ul', "li font[color='#232']"
+        it_converts_to 'ul', "li font[color='#309']"
       end
     end
+  
   end
 end

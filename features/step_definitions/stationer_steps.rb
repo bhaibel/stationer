@@ -1,3 +1,24 @@
+Given /^an internal stylesheet with "([^"]*)"$/ do |style|
+  @original ||= Nokogiri::HTML("<html></html>")
+  unless @original.css('head').length > 0
+    @original.root << "<head></head>"
+  end
+  @original.css('head').first << "<style>#{style}</style>"
+end
+
+Given /^a "([^"]*)" tag$/ do |tag|
+  @original ||= Nokogiri::HTML("<html></html>")
+  unless @original.css('body').length > 0
+    @original.root << "<body></body>"
+  end
+  @original.css('body').first << "<#{tag}>text</#{tag}>"
+end
+
+When /^Stationer processes the given document$/ do
+  @processed_string = Stationer.process @original.to_s
+end
+
+
 When /^Stationer processes an email including the following string:$/ do |string|
   @processed_string = Stationer.process string
 end
