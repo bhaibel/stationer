@@ -1,6 +1,10 @@
 GEM
+  remote: http://rubygems.org/
   specs:
+    addressable (2.2.6)
     builder (2.1.2)
+    css_parser (1.2.5)
+      addressable
     cucumber (1.0.2)
       builder (>= 2.1.2)
       diff-lcs (>= 1.1.2)
@@ -26,6 +30,7 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
+  css_parser
   cucumber
   nokogiri
   rspec
