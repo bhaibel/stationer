@@ -106,6 +106,16 @@ describe Stationer::Node do
         it_converts_to 'ul', "li font[color='#232']"
         it_converts_to 'ul', "li font[color='#309']"
       end
+      
+      context "with a color inline-css style overriden by *first* child li's inline css" do
+        before do
+          @original.css('ul').first.set_attribute('style', "color: #232")
+          @original.css('li').first.set_attribute('style', "color: #309")
+        end
+        
+        it_converts_to 'ul', "li font[color='#232']"
+        it_converts_to 'ul', "li font[color='#309']"
+      end
     end
   
   end

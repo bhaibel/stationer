@@ -17,7 +17,7 @@ class Stationer
       n = @node.dup
       if LOW_LEVEL_NODES.include?(n.name)
         if font_attrs_as_string.length > 0
-          n.inner_html = "<font #{font_attrs_as_string}>#{@node.inner_html}</font>"
+          n.inner_html = "<font #{font_attrs_as_string}>#{n.inner_html}</font>"
         end
       elsif n.children.length > 0
         n.inner_html = n.children.inject("") do |html, child|
@@ -40,7 +40,7 @@ class Stationer
     end
 
     def find_font_attrs
-      @font_attrs = @parent_font_attrs || {}
+      @font_attrs = @parent_font_attrs ? @parent_font_attrs.clone : {}
       @font_attrs.merge! css_to_font_attr(:inline_css, "color", "color")
       @font_attrs.merge! css_to_font_attr(:inline_css, "font-family", "face")
     end
