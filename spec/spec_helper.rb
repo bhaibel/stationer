@@ -1,5 +1,6 @@
 require 'stationer'
 require 'stationer/node'
+require 'stationer/document'
 
 def it_converts_to(name, selector)
   it "converts the node to email-friendly format" do

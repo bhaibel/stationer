@@ -1,3 +1,5 @@
+require 'css_parser'
+
 class Stationer
   class Document
     def initialize(string)
@@ -26,8 +28,8 @@ class Stationer
     end
 
     def find_css
-      @css = @email_doc.css('style').inject CSSParser::Parser.new do |parser, stylesheet|
-        parser.add_block! style.inner_html.dup
+      @css = doc.css('style').inject(CssParser::Parser.new) do |parser, stylesheet|
+        parser = parser.add_block! stylesheet.inner_html.dup
       end
     end
 
